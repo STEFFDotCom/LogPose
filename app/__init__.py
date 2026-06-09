@@ -14,6 +14,8 @@ def create_app():
 
     db.init_app(app)
 
+    from app import models
+
     login_manager.init_app(app)
 
     # Register blueprints here
