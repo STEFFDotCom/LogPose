@@ -1,12 +1,19 @@
-from app import db
+from app import db, login_manager
+from flask_login import UserMixin
 
-class User(db.Model):
+class User(db.Model, UserMixin):
     __tablename__ = "users"
 
     id = db.Column(db.Integer, primary_key = True, nullable = False)
     user_name = db.Column(db.String(100), nullable = False)
     password_hash = db.Column(db.String(100), nullable = False)
     is_admin = db.Column(db.Boolean, nullable = False, default = False)
+
+#  retrieve the user from the session with an ID
+@login_manager.user_loader
+def load_user(user_id):
+    return User.query.get(int(user_id))
+
 class Team(db.Model):
     __tablename__ = "teams"
     

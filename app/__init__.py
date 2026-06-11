@@ -1,6 +1,7 @@
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager
+from app.blueprints.auth.auth import auth
 
 db = SQLAlchemy()
 
@@ -19,6 +20,7 @@ def create_app():
     login_manager.init_app(app)
 
     # Register blueprints here
-    # app.register_blueprint(some_blueprint)
+
+    app.register_blueprint(auth)
 
     return app
