@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<form method="POST" action="">
+    <label for="reg-mail-lab">Email</label>
+    <input type="email" id="reg-mail-lab" name="reg-mail">
+    <label for="reg-uname-lab">Username</label>
+    <input type="text" id="reg-uname-lab" name="reg-username">
+    <label for="reg-password-lab">Password</label>
+    <input type="password" id="reg-password-lab" name="reg-password">
+    <label for="reg-verify-password-lab">Verify password</label>
+    <input type="password" id="reg-verify-password-lab" name="reg-verify-password">
+
+    <button type="submit">Register</button>
+</form>
+
+{% endblock %}

@@ -1,7 +1,13 @@
+import os
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager
 from app.blueprints.auth.auth import auth
+from dotenv import load_dotenv
+
+
+# make .env file aviable in here
+load_dotenv()
 
 db = SQLAlchemy()
 
@@ -12,6 +18,8 @@ def create_app():
     app = Flask(__name__)
 
     app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///logpose.db"
+
+    app.config["SECRET_KEY"] = os.environ.get("SECRET_KEY")
 
     db.init_app(app)
 
