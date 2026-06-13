@@ -5,8 +5,9 @@ class User(db.Model, UserMixin):
     __tablename__ = "users"
 
     id = db.Column(db.Integer, primary_key = True, nullable = False)
-    user_name = db.Column(db.String(100), nullable = False)
+    user_name = db.Column(db.String(100), nullable = False, unique = True)
     password_hash = db.Column(db.String(100), nullable = False)
+    email = db.Column(db.String(100), nullable = False, unique = True)
     is_admin = db.Column(db.Boolean, nullable = False, default = False)
 
 #  retrieve the user from the session with an ID

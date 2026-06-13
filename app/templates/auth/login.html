@@ -1,15 +1,36 @@
 {% extends "base.html" %}
 
+{% block title %}Sign in — LogPose{% endblock %}
+
 {% block content %}
+<div class="auth-wrap">
+  <div class="auth-card">
 
-<form method="POST" action="">
-    <label for="uname">Username</label>
-    <input type="text" id="uname" name="username">
-    <label for="pword">Password</label>
-    <input type="password" id="pword" name="password">
+    <div class="auth-brand">
+      <div class="auth-brand-icon">&#9685;</div>
+      <span class="auth-brand-name">LogPose</span>
+    </div>
 
-    <button type="submit">login</button>
-    <a href="#">Register</a>
-</form>
+    <div class="auth-header">
+      <h1 class="auth-title">Sign in</h1>
+      <p class="auth-sub">Don't have an account? <a href="{{ url_for('auth.create_user') }}" class="auth-link">Register</a></p>
+    </div>
 
+    <form method="POST" action="">
+
+      <div class="form-group">
+        <label for="username">Username</label>
+        <input type="text" id="username" name="username" placeholder="your username" autocomplete="username" required>
+      </div>
+
+      <div class="form-group">
+        <label for="password">Password</label>
+        <input type="password" id="password" name="password" placeholder="••••••••" autocomplete="current-password" required>
+      </div>
+
+      <button type="submit" class="auth-btn">Sign in</button>
+
+    </form>
+  </div>
+</div>
 {% endblock %}

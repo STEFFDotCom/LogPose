@@ -12,7 +12,7 @@ auth = Blueprint("auth", __name__)
 def login():
     # show login page
     if request.method == "GET":
-        return render_template("login.html")
+        return render_template("auth/login.html")
     
     # read submitted data and check it against DB
     if request.method == "POST":
@@ -41,7 +41,45 @@ def login():
 # POST user fills out form and we sent it to the server to create the user
 @auth.route("/create_user", methods = ["GET", "POST"])
 def create_user():
-    pass
+    # show register page
+    if request.method == "GET":
+        return render_template("auth/register.html")
+    
+    # take data from user and check against DB - if it passes it regisers the user in DB and sends the user to login page
+    if request.method == "POST":
+
+        email_input = request.form.get("reg-mail")
+        username_input = request.form.get("reg-username")
+        password_input = request.form.get("reg-password")
+        hashed_password = generate_password_hash(password_input)
+        verify_password_input = request.form.get("reg-verify-password")
+
+        email_taken = User.query.filter_by(email = email_input).first()
+
+        if email_taken is not None:
+            flash("Email is already taken", "danger")
+            return redirect(url_for("auth.create_user"))
+        
+        username_taken = User.query.filter_by(user_name = username_input).first()
+
+        if username_taken is not None:
+            flash("Username is already taken", "danger")
+            return redirect(url_for("auth.create_user"))
+
+        if password_input != verify_password_input:
+            flash("Passwords does not match - try again!", "danger")
+            return redirect(url_for("auth.create_user"))
+
+
+        # create new user with the info from user
+        new_user = User(user_name = username_input, email = email_input, password_hash = hashed_password)
+
+        # add user to the DB
+        db.session.add(new_user)
+
+        # save user in DB and send log them in
+        db.session.commit()
+        return redirect(url_for("auth.login"))
 
 # POST - intentional action to end the user session, redirects to login
 @auth.route("/logout", methods = ["POST"])

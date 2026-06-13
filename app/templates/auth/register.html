@@ -1,18 +1,46 @@
 {% extends "base.html" %}
 
+{% block title %}Create account — LogPose{% endblock %}
+
 {% block content %}
+<div class="auth-wrap">
+  <div class="auth-card">
 
-<form method="POST" action="">
-    <label for="reg-mail-lab">Email</label>
-    <input type="email" id="reg-mail-lab" name="reg-mail">
-    <label for="reg-uname-lab">Username</label>
-    <input type="text" id="reg-uname-lab" name="reg-username">
-    <label for="reg-password-lab">Password</label>
-    <input type="password" id="reg-password-lab" name="reg-password">
-    <label for="reg-verify-password-lab">Verify password</label>
-    <input type="password" id="reg-verify-password-lab" name="reg-verify-password">
+    <div class="auth-brand">
+      <div class="auth-brand-icon">&#9685;</div>
+      <span class="auth-brand-name">LogPose</span>
+    </div>
 
-    <button type="submit">Register</button>
-</form>
+    <div class="auth-header">
+      <h1 class="auth-title">Create account</h1>
+      <p class="auth-sub">Already have an account? <a href="{{ url_for('auth.login') }}" class="auth-link">Sign in</a></p>
+    </div>
 
+    <form method="POST" action="">
+
+      <div class="form-group">
+        <label for="reg-mail">Email</label>
+        <input type="email" id="reg-mail" name="reg-mail" placeholder="you@company.com" autocomplete="email" required>
+      </div>
+
+      <div class="form-group">
+        <label for="reg-username">Username</label>
+        <input type="text" id="reg-username" name="reg-username" placeholder="your username" autocomplete="username" required>
+      </div>
+
+      <div class="form-group">
+        <label for="reg-password">Password</label>
+        <input type="password" id="reg-password" name="reg-password" placeholder="••••••••" autocomplete="new-password" required>
+      </div>
+
+      <div class="form-group">
+        <label for="reg-verify-password">Verify password</label>
+        <input type="password" id="reg-verify-password" name="reg-verify-password" placeholder="••••••••" autocomplete="new-password" required>
+      </div>
+
+      <button type="submit" class="auth-btn">Create account</button>
+
+    </form>
+  </div>
+</div>
 {% endblock %}

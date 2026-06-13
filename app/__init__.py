@@ -2,7 +2,6 @@ import os
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager
-from app.blueprints.auth.auth import auth
 from dotenv import load_dotenv
 
 
@@ -28,6 +27,8 @@ def create_app():
     login_manager.init_app(app)
 
     # Register blueprints here
+    
+    from app.blueprints.auth.auth import auth
 
     app.register_blueprint(auth)
 
