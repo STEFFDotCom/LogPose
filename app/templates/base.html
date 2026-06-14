@@ -36,7 +36,9 @@
                     {% endif %}
                     <div class="nav-sep"></div>
                     <span class="nav-user">{{ current_user.user_name }}</span>
-                    <a href="{{ url_for('auth.logout') }}" class="nav-link nav-link-logout">Sign out</a>
+                    <form method="POST" action="{{ url_for('auth.logout') }}">
+                        <button type="submit" class="nav-link nav-link-logout">Sign out</button>
+                    </form>
                 {% else %}
                     <a href="{{ url_for('auth.login') }}" class="nav-link">Sign in</a>
                 {% endif %}

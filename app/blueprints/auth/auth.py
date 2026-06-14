@@ -2,7 +2,7 @@ from flask import Blueprint, request, render_template, flash, redirect, url_for
 from werkzeug.security import generate_password_hash, check_password_hash
 from app import db
 from app.models import User
-from flask_login import login_user
+from flask_login import login_user, logout_user
 
 auth = Blueprint("auth", __name__)
 
@@ -84,4 +84,10 @@ def create_user():
 # POST - intentional action to end the user session, redirects to login
 @auth.route("/logout", methods = ["POST"])
 def logout():
-    pass
+    
+    # no need to have if POST statement here, since we only accept POST
+    logout_user()
+
+    flash("You have been logged out", "success")
+
+    return redirect(url_for("auth.login"))
