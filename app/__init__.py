@@ -26,10 +26,16 @@ def create_app():
 
     login_manager.init_app(app)
 
+    login_manager.login_view = "auth.login"
+
     # Register blueprints here
     
     from app.blueprints.auth.auth import auth
 
+    from app.blueprints.boards.boards import boards
+
     app.register_blueprint(auth)
+
+    app.register_blueprint(boards)
 
     return app
