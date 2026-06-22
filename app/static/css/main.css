@@ -364,3 +364,139 @@ body {
 }
 .auth-btn:hover  { background: var(--accent-hover); }
 .auth-btn:active { transform: scale(0.98); }
+
+/* ============================================================
+   BOARDS — dashboard & create form
+   ============================================================ */
+
+.page-head {
+    display:     flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.75rem;
+}
+
+.page-title {
+    font-family:    var(--font-ui);
+    font-size:      1.4rem;
+    font-weight:    600;
+    color:          var(--text-1);
+    letter-spacing: -0.02em;
+}
+
+.btn-primary {
+    background: var(--accent);
+    color:      #0A0F1E;
+    border:     none;
+    padding:    0.55rem 1.1rem;
+    border-radius: var(--r-md);
+    cursor:     pointer;
+    font-family: var(--font-ui);
+    font-size:  0.85rem;
+    font-weight: 600;
+    transition: background 0.15s;
+    display:    inline-block;
+}
+.btn-primary:hover { background: var(--accent-hover); }
+
+.section-label {
+    font-family:    var(--font-ui);
+    font-size:      0.78rem;
+    font-weight:    600;
+    color:          var(--text-3);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    margin:         1.75rem 0 0.85rem;
+}
+
+.board-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap:     1rem;
+}
+
+.board-card {
+    background:    var(--bg-surface);
+    border:        1px solid var(--border);
+    border-radius: var(--r-lg);
+    padding:       1.1rem;
+    cursor:        pointer;
+    transition:    border-color 0.15s, transform 0.15s;
+    display:       block;
+}
+.board-card:hover { border-color: var(--accent); transform: translateY(-2px); }
+
+.board-icon {
+    width:  34px;
+    height: 34px;
+    border-radius: var(--r-md);
+    display:       flex;
+    align-items:   center;
+    justify-content: center;
+    margin-bottom: 0.7rem;
+    font-size:     1rem;
+}
+.board-icon.personal { background: var(--accent-dim); color: var(--accent); }
+.board-icon.shared    { background: var(--green-dim);  color: var(--green); }
+
+.board-name {
+    font-family: var(--font-ui);
+    font-weight: 600;
+    font-size:   0.95rem;
+    color:       var(--text-1);
+    margin-bottom: 4px;
+}
+
+.board-meta {
+    font-size: 0.78rem;
+    color:     var(--text-3);
+}
+
+.empty-state {
+    color:      var(--text-3);
+    font-size:  0.85rem;
+    padding:    1.5rem;
+    border:     1px dashed var(--border);
+    border-radius: var(--r-lg);
+    text-align: center;
+}
+
+/* --- create board form extras --- */
+
+.radio-row {
+    display: flex;
+    gap:     0.75rem;
+}
+
+.radio-option {
+    display:     flex;
+    align-items: center;
+    gap:         8px;
+    padding:     0.55rem 0.9rem;
+    background:  var(--bg-card);
+    border:      1px solid var(--border);
+    border-radius: var(--r-md);
+    cursor:      pointer;
+    font-size:   0.85rem;
+    color:       var(--text-2);
+    flex:        1;
+    transition:  border-color 0.15s, color 0.15s;
+}
+
+.radio-option:has(input:checked) {
+    border-color: var(--accent);
+    color:        var(--text-1);
+}
+
+.radio-option input { width: auto; margin: 0; }
+
+#selected_team {
+    width:      100%;
+    padding:    0.6rem 0.85rem;
+    background: var(--bg-card);
+    border:     1px solid var(--border);
+    border-radius: var(--r-md);
+    color:      var(--text-1);
+    font-family: var(--font-body);
+    font-size:  0.9rem;
+}

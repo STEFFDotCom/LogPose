@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+
+{% block title %}Boards — LogPose{% endblock %}
+
+{% block content %}
+
+<div class="page-head">
+    <h1 class="page-title">Your Boards</h1>
+    <a href="{{ url_for('boards.create_board') }}" class="btn-primary">+ Create board</a>
+</div>
+
+<div class="section-label">Personal</div>
+{% if personal_boards %}
+<div class="board-grid">
+    {% for board in personal_boards %}
+    <a href="{{ url_for('boards.view_board', board_id=board.id) }}" class="board-card">
+        <div class="board-icon personal">&#128279;</div>
+        <div class="board-name">{{ board.board_name }}</div>
+        <div class="board-meta">Personal board</div>
+    </a>
+    {% endfor %}
+</div>
+{% else %}
+<div class="empty-state">You don't have any personal boards yet.</div>
+{% endif %}
+
+<div class="section-label">Team Shared</div>
+{% if shared_boards %}
+<div class="board-grid">
+    {% for board in shared_boards %}
+    <a href="{{ url_for('boards.view_board', board_id=board.id) }}" class="board-card">
+        <div class="board-icon shared">&#128101;</div>
+        <div class="board-name">{{ board.board_name }}</div>
+        <div class="board-meta">Shared board</div>
+    </a>
+    {% endfor %}
+</div>
+{% else %}
+<div class="empty-state">No shared boards yet.</div>
+{% endif %}
+
+{% endblock %}

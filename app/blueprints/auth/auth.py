@@ -3,6 +3,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from app import db
 from app.models import User
 from flask_login import login_user, logout_user
+from app.blueprints.boards import boards
 
 auth = Blueprint("auth", __name__)
 
@@ -31,8 +32,8 @@ def login():
         if check_password_hash(stored_user.password_hash, password_input):
             # remember=True has the user logged in even after closing the browser
             login_user(stored_user, remember=True)
-            # PLACEHOLDER UNTIL WE CREATE BOARDS REMEMBER TO CHANGE
-            return redirect(url_for("auth.login"))
+            # PLACEHOLDER UNTIL WE CREATE BOARDS REMEMBER TO CHANGE!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+            return redirect(url_for("boards.my_boards"))
         else:
             flash("Wrong username or password - try again!", "danger")
             return redirect(url_for("auth.login"))
@@ -56,16 +57,19 @@ def create_user():
 
         email_taken = User.query.filter_by(email = email_input).first()
 
+        # check if email is taken
         if email_taken is not None:
             flash("Email is already taken", "danger")
             return redirect(url_for("auth.create_user"))
         
         username_taken = User.query.filter_by(user_name = username_input).first()
 
+        # check if username is taken
         if username_taken is not None:
             flash("Username is already taken", "danger")
             return redirect(url_for("auth.create_user"))
 
+        # check if password match
         if password_input != verify_password_input:
             flash("Passwords does not match - try again!", "danger")
             return redirect(url_for("auth.create_user"))
@@ -79,6 +83,7 @@ def create_user():
 
         # save user in DB and send log them in
         db.session.commit()
+        flash("User is created - please login", "success")
         return redirect(url_for("auth.login"))
 
 # POST - intentional action to end the user session, redirects to login
