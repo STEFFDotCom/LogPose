@@ -117,4 +117,31 @@ def view_board(board_id):
 @boards.route("/boards/<int:board_id>/delete", methods = ["POST"])
 @login_required
 def delete_board(board_id):
-    pass
+
+    # get the row of the board pressed
+    get_board_row = Board.query.filter_by(id = board_id).first()
+
+    if get_board_row:
+        if get_board_row.is_shared == True:
+            if current_user.is_admin == True:
+                # delete row
+                db.session.delete(get_board_row)
+                # save changes
+                db.session.commit()
+                flash("Board has been successfully deleted!", "success")
+                return redirect(url_for("boards.my_boards"))
+            else:
+                flash("You do not have permission to delete this board. If you want to have it deleted, contact admin.", "danger")
+                return redirect(url_for("boards.view_board", board_id = board_id))
+        elif get_board_row.is_shared == False:
+            if get_board_row.user_id == current_user.id:
+                db.session.delete(get_board_row)
+                db.session.commit()
+                flash("Board has been successfully deleted!", "success")
+                return redirect(url_for("boards.my_boards"))
+            else:
+                flash("You do not have permission to delete this board!", "danger")
+                return redirect(url_for("boards.view_board", board_id = board_id))
+    else:
+        flash("Board does not exist or an error happened - contact admin", "danger")
+        return redirect(url_for("boards.my_boards"))

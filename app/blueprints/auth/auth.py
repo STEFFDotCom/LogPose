@@ -2,10 +2,18 @@ from flask import Blueprint, request, render_template, flash, redirect, url_for
 from werkzeug.security import generate_password_hash, check_password_hash
 from app import db
 from app.models import User
-from flask_login import login_user, logout_user
+from flask_login import login_user, logout_user, current_user
 from app.blueprints.boards import boards
 
 auth = Blueprint("auth", __name__)
+
+@auth.route("/")
+def home():
+    if current_user.is_authenticated:
+        return redirect(url_for("boards.my_boards"))
+    else:
+        return redirect(url_for("auth.login"))
+
 
 # GET user navigates to page and gets served the empty form
 # POST the user fills out the login, hits submit, credentials gets sent to the server

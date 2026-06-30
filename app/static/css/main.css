@@ -500,3 +500,52 @@ body {
     font-family: var(--font-body);
     font-size:  0.9rem;
 }
+
+/* ============================================================
+   VIEW BOARD — header & delete button
+   ============================================================ */
+
+.board-head {
+    display:     flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.75rem;
+    padding-bottom: 1.25rem;
+    border-bottom: 1px solid var(--border);
+}
+
+.board-title {
+    font-family:    var(--font-ui);
+    font-size:      1.4rem;
+    font-weight:    600;
+    color:          var(--text-1);
+    letter-spacing: -0.02em;
+}
+
+.board-actions {
+    display: flex;
+    gap:     0.6rem;
+}
+
+.btn-danger-outline {
+    background: transparent;
+    color:      var(--red);
+    border:     1px solid var(--red);
+    padding:    0.5rem 1rem;
+    border-radius: var(--r-md);
+    cursor:     pointer;
+    font-family: var(--font-ui);
+    font-size:  0.82rem;
+    font-weight: 500;
+    transition: background 0.15s;
+}
+.btn-danger-outline:hover { background: var(--red-dim); }
+
+.placeholder {
+    color:      var(--text-3);
+    font-size:  0.85rem;
+    padding:    2rem;
+    border:     1px dashed var(--border);
+    border-radius: var(--r-lg);
+    text-align: center;
+}

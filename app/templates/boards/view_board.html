@@ -1,9 +1,19 @@
 {% extends "base.html" %}
 
-{% block title %}Create board — LogPose{% endblock %}
+{% block title %}{{ board_info.board_name }} — LogPose{% endblock %}
 
 {% block content %}
 
-<h1>{{ board_info.board_name}}</h1>
+<div class="board-head">
+    <h1 class="board-title">{{ board_info.board_name }}</h1>
+    <div class="board-actions">
+        <form method="POST" action="{{ url_for('boards.delete_board', board_id=board_info.id) }}"
+              onsubmit="return confirm('Delete this board? This cannot be undone.');">
+            <button type="submit" class="btn-danger-outline">Delete board</button>
+        </form>
+    </div>
+</div>
+
+<div class="placeholder">Groups and links will appear here</div>
 
 {% endblock %}
