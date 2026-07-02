@@ -34,8 +34,16 @@ def create_app():
 
     from app.blueprints.boards.boards import boards
 
+    from app.blueprints.groups.groups import groups
+
+    from app.blueprints.links.links import links
+
     app.register_blueprint(auth)
 
     app.register_blueprint(boards)
+
+    app.register_blueprint(groups)
+
+    app.register_blueprint(links)
 
     return app
