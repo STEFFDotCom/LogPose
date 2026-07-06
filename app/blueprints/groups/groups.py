@@ -74,6 +74,7 @@ def delete_group(group_id):
     # delete the group
     db.session.delete(get_group_row)
     db.session.commit()
+
     flash("Group has been successfully deleted!", "success")
     return redirect(url_for("boards.view_board", board_id = board_id))
 
