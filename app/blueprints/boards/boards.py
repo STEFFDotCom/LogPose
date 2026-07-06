@@ -1,7 +1,7 @@
 from flask import Blueprint, request, render_template, flash, redirect, url_for
 from flask_login import login_required, current_user
 from app import db
-from app.models import Board, UserTeam, Team
+from app.models import Board, UserTeam, Team, Group, Link
 
 boards = Blueprint("boards", __name__)
 
@@ -94,18 +94,28 @@ def view_board(board_id):
     # get the row of the board pressed
     get_board_row = Board.query.filter_by(id = board_id).first()
 
+    # get rows of all groups in the board
+    get_group_rows = Group.query.filter_by(board_id = board_id).all()
+
+    group_ids = []
+    for value in get_group_rows:
+        group_ids.append(value.id)
+
+    get_links_for_this_board = Link.query.filter(Link.group_id.in_(group_ids)).all()
+
+
     # permission checks for clicked board
     if get_board_row:
         if get_board_row.is_shared == False:
             if get_board_row.user_id == current_user.id:
-                return render_template("boards/view_board.html", board_info = get_board_row)
+                return render_template("boards/view_board.html", board_info = get_board_row, groups_info = get_group_rows, links_info = get_links_for_this_board)
             else:
                 flash("You do not have permission to view this - contact admin", "danger")
                 return redirect(url_for("boards.my_boards"))
         elif get_board_row.is_shared == True:
             check_team = UserTeam.query.filter_by(team_id = get_board_row.team_id, user_id = current_user.id).first()
             if check_team:
-                return render_template("boards/view_board.html", board_info = get_board_row)
+                return render_template("boards/view_board.html", board_info = get_board_row, groups_info = get_group_rows, links_info = get_links_for_this_board)
             else:
                 flash("You do not have permission to view this - contact admin", "danger")
                 return redirect(url_for("boards.my_boards"))
