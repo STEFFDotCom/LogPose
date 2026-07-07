@@ -122,6 +122,17 @@ def view_board(board_id):
     else:
         flash("Board does not exist or an error happened - contact admin", "danger")
         return redirect(url_for("boards.my_boards"))
+    
+    if not get_board_row:
+        flash("Board does not exist or an error happened - contact admin", "danger")
+        return redirect(url_for("boards.my_boards"))
+    elif get_board_row.is_shared == True:
+        get_userteam_row = UserTeam.query.filter_by(user_id = current_user.id, team_id = get_board_row.team_id).first()
+        if not get_userteam_row:
+            flash("You do not have permission to view this - contact admin", "danger")
+            return redirect(url_for("boards.my_boards"))
+    elif get_board_row.is_shared == False:
+        
 
 # POST the user click a button and confirm to delete button, we delete it in DB
 @boards.route("/boards/<int:board_id>/delete", methods = ["POST"])
