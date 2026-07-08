@@ -104,25 +104,7 @@ def view_board(board_id):
     get_links_for_this_board = Link.query.filter(Link.group_id.in_(group_ids)).all()
 
 
-    # permission checks for clicked board
-    if get_board_row:
-        if get_board_row.is_shared == False:
-            if get_board_row.user_id == current_user.id:
-                return render_template("boards/view_board.html", board_info = get_board_row, groups_info = get_group_rows, links_info = get_links_for_this_board)
-            else:
-                flash("You do not have permission to view this - contact admin", "danger")
-                return redirect(url_for("boards.my_boards"))
-        elif get_board_row.is_shared == True:
-            check_team = UserTeam.query.filter_by(team_id = get_board_row.team_id, user_id = current_user.id).first()
-            if check_team:
-                return render_template("boards/view_board.html", board_info = get_board_row, groups_info = get_group_rows, links_info = get_links_for_this_board)
-            else:
-                flash("You do not have permission to view this - contact admin", "danger")
-                return redirect(url_for("boards.my_boards"))
-    else:
-        flash("Board does not exist or an error happened - contact admin", "danger")
-        return redirect(url_for("boards.my_boards"))
-    
+    # permission checks for clicked board / defensive clause
     if not get_board_row:
         flash("Board does not exist or an error happened - contact admin", "danger")
         return redirect(url_for("boards.my_boards"))
@@ -132,7 +114,11 @@ def view_board(board_id):
             flash("You do not have permission to view this - contact admin", "danger")
             return redirect(url_for("boards.my_boards"))
     elif get_board_row.is_shared == False:
-        
+        if get_board_row.user_id != current_user.id:
+            flash("You do not have permission to view this - contact admin", "danger")
+            return redirect(url_for("boards.my_boards"))
+
+    return render_template("boards/view_board.html", board_info = get_board_row, groups_info = get_group_rows, links_info = get_links_for_this_board)
 
 # POST the user click a button and confirm to delete button, we delete it in DB
 @boards.route("/boards/<int:board_id>/delete", methods = ["POST"])
