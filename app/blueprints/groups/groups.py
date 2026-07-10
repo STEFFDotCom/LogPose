@@ -28,12 +28,20 @@ def create_group(board_id):
             return redirect(url_for("boards.my_boards"))
     
     # create the group
-    new_group_name = request.form.get("GROUP_NAME_PLACEHOLDER")
-    new_group_color = request.form.get("GROUP_COLOR_PLACEHOLDER")
+    new_group_name = request.form.get("group_name")
+    new_group_color = request.form.get("group_color")
     new_group_board_id = get_board_row.id
+
     query_max_position = select(func.max(Group.position)).where(Group.board_id == board_id)
     max_position = db.session.scalar(query_max_position)
-    new_group = Group(group_name = new_group_name, group_color = new_group_color, board_id = new_group_board_id, position = (max_position + 1) if max_position is not None else 1)
+
+    new_group = Group(
+        group_name = new_group_name,
+        group_color = new_group_color,
+        board_id = new_group_board_id,
+        position = (max_position + 1) if max_position is not None else 1
+    )
+    
     db.session.add(new_group)
     db.session.commit()
     flash("Group has been created!", "success")

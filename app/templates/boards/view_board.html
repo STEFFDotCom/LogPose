@@ -7,6 +7,7 @@
 <div class="board-head">
     <h1 class="board-title">{{ board_info.board_name }}</h1>
     <div class="board-actions">
+        <button type="button" class="btn-primary" onclick="openModal('create-group-modal')">+ Add group</button>
         <form method="POST" action="{{ url_for('boards.delete_board', board_id=board_info.id) }}"
               onsubmit="return confirm('Delete this board? This cannot be undone.');">
             <button type="submit" class="btn-danger-outline">Delete board</button>
@@ -14,8 +15,207 @@
     </div>
 </div>
 
+<div class="groups-wrap">
+    {% for group in groups_info %}
+    <div class="group-card">
+        <div class="group-header" style="border-left-color: {{ group.group_color }};">
+            <div class="group-swatch" style="background: {{ group.group_color }};"></div>
+            <div class="group-name">{{ group.group_name }}</div>
+            <div class="group-header-actions">
+                <span class="group-add-link" onclick="openAddLinkModal({{ group.id }})">+ Add link</span>
+                <span class="group-edit-link" onclick="openEditGroupModal({{ group.id }}, '{{ group.group_name }}', '{{ group.group_color }}')">Edit</span>
+                <form method="POST" action="{{ url_for('groups.delete_group', group_id=group.id) }}"
+                      onsubmit="return confirm('Delete this group and all its links?');" class="inline-form">
+                    <button type="submit" class="group-delete-link">Delete</button>
+                </form>
+            </div>
+        </div>
+        <div class="links-list">
+            {% set has_links = false %}
+            {% for link in links_info %}
+                {% if link.group_id == group.id %}
+                    {% set has_links = true %}
+                    <div class="link-row">
+                        <div class="link-favicon"></div>
+                        <a href="{{ link.url }}" target="_blank" rel="noopener" class="link-title">{{ link.title }}</a>
+                        <div class="link-dots" onclick="toggleLinkMenu(event, {{ link.id }})">&#8942;</div>
+                        <div class="link-menu" id="link-menu-{{ link.id }}">
+                            <div class="link-menu-item" onclick="showDescription('{{ link.description or 'No description' }}')">Description</div>
+                            <div class="link-menu-item" onclick="openEditLinkModal({{ link.id }}, '{{ link.title }}', '{{ link.url }}', '{{ link.description or '' }}')">Change link</div>
+                            <form method="POST" action="{{ url_for('links.delete_link', link_id=link.id) }}"
+                                  onsubmit="return confirm('Delete this link?');" class="inline-form">
+                                <button type="submit" class="link-menu-item link-menu-delete">Delete</button>
+                            </form>
+                        </div>
+                    </div>
+                {% endif %}
+            {% endfor %}
+            {% if not has_links %}
+                <div class="empty-group">No links yet</div>
+            {% endif %}
+        </div>
+    </div>
+    {% else %}
+    <div class="empty-state">No groups yet. Create one to start adding links.</div>
+    {% endfor %}
+</div>
 
+<!-- Create group modal -->
+<div class="modal-overlay" id="create-group-modal">
+    <div class="modal-card">
+        <h2 class="modal-title">New group</h2>
+        <form method="POST" action="{{ url_for('groups.create_group', board_id=board_info.id) }}">
+            <div class="form-group">
+                <label for="group_name">Group name</label>
+                <input type="text" id="group_name" name="group_name" placeholder="e.g. Monitoring" required>
+            </div>
+            <div class="form-group">
+                <label for="group_color">Color</label>
+                <input type="color" id="group_color" name="group_color" value="#06B6D4">
+            </div>
+            <div class="modal-actions">
+                <button type="button" class="btn-secondary" onclick="closeModal('create-group-modal')">Cancel</button>
+                <button type="submit" class="btn-primary">Create group</button>
+            </div>
+        </form>
+    </div>
+</div>
 
-<div class="groups-div">Groups and links will appear here</div>
+<!-- Edit group modal -->
+<div class="modal-overlay" id="edit-group-modal">
+    <div class="modal-card">
+        <h2 class="modal-title">Edit group</h2>
+        <form method="POST" id="edit-group-form" action="">
+            <div class="form-group">
+                <label for="new_name">Group name</label>
+                <input type="text" id="new_name" name="new_name" required>
+            </div>
+            <div class="form-group">
+                <label for="new_color">Color</label>
+                <input type="color" id="new_color" name="new_color">
+            </div>
+            <div class="modal-actions">
+                <button type="button" class="btn-secondary" onclick="closeModal('edit-group-modal')">Cancel</button>
+                <button type="submit" class="btn-primary">Save changes</button>
+            </div>
+        </form>
+    </div>
+</div>
 
+<!-- Add link modal -->
+<div class="modal-overlay" id="add-link-modal">
+    <div class="modal-card">
+        <h2 class="modal-title">Add link</h2>
+        <form method="POST" id="add-link-form" action="">
+            <div class="form-group">
+                <label for="link_title">Title</label>
+                <input type="text" id="link_title" name="link_title" placeholder="e.g. Grafana Dashboard" required>
+            </div>
+            <div class="form-group">
+                <label for="link_url">URL</label>
+                <input type="text" id="link_url" name="link_url" placeholder="https://..." required>
+            </div>
+            <div class="form-group">
+                <label for="link_description">Description <span class="char-hint">(max 150 characters)</span></label>
+                <textarea id="link_description" name="link_description" maxlength="150" placeholder="What is this link for?"></textarea>
+            </div>
+            <div class="modal-actions">
+                <button type="button" class="btn-secondary" onclick="closeModal('add-link-modal')">Cancel</button>
+                <button type="submit" class="btn-primary">Add link</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Edit link modal -->
+<div class="modal-overlay" id="edit-link-modal">
+    <div class="modal-card">
+        <h2 class="modal-title">Edit link</h2>
+        <form method="POST" id="edit-link-form" action="">
+            <div class="form-group">
+                <label for="edit_link_title">Title</label>
+                <input type="text" id="edit_link_title" name="link_title" required>
+            </div>
+            <div class="form-group">
+                <label for="edit_link_url">URL</label>
+                <input type="text" id="edit_link_url" name="link_url" required>
+            </div>
+            <div class="form-group">
+                <label for="edit_link_description">Description <span class="char-hint">(max 150 characters)</span></label>
+                <textarea id="edit_link_description" name="link_description" maxlength="150"></textarea>
+            </div>
+            <div class="modal-actions">
+                <button type="button" class="btn-secondary" onclick="closeModal('edit-link-modal')">Cancel</button>
+                <button type="submit" class="btn-primary">Save changes</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Description popup -->
+<div class="modal-overlay" id="description-modal">
+    <div class="modal-card modal-card-sm">
+        <h2 class="modal-title">Description</h2>
+        <p id="description-text" class="description-text"></p>
+        <div class="modal-actions">
+            <button type="button" class="btn-secondary" onclick="closeModal('description-modal')">Close</button>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    function openModal(id) {
+        document.getElementById(id).classList.add('modal-open');
+    }
+    function closeModal(id) {
+        document.getElementById(id).classList.remove('modal-open');
+    }
+
+    function openEditGroupModal(groupId, name, color) {
+        document.getElementById('edit-group-form').action = '/groups/' + groupId + '/edit';
+        document.getElementById('new_name').value = name;
+        document.getElementById('new_color').value = color;
+        openModal('edit-group-modal');
+    }
+
+    function openAddLinkModal(groupId) {
+        document.getElementById('add-link-form').action = '/groups/' + groupId + '/links/create';
+        openModal('add-link-modal');
+    }
+
+    function openEditLinkModal(linkId, title, url, description) {
+        document.getElementById('edit-link-form').action = '/links/' + linkId + '/edit';
+        document.getElementById('edit_link_title').value = title;
+        document.getElementById('edit_link_url').value = url;
+        document.getElementById('edit_link_description').value = description;
+        openModal('edit-link-modal');
+    }
+
+    function showDescription(text) {
+        document.getElementById('description-text').textContent = text;
+        openModal('description-modal');
+        document.querySelectorAll('.link-menu').forEach(m => m.classList.remove('menu-open'));
+    }
+
+    function toggleLinkMenu(event, linkId) {
+        event.stopPropagation();
+        const menu = document.getElementById('link-menu-' + linkId);
+        const isOpen = menu.classList.contains('menu-open');
+        document.querySelectorAll('.link-menu').forEach(m => m.classList.remove('menu-open'));
+        if (!isOpen) menu.classList.add('menu-open');
+    }
+
+    document.addEventListener('click', () => {
+        document.querySelectorAll('.link-menu').forEach(m => m.classList.remove('menu-open'));
+    });
+
+    document.querySelectorAll('.modal-overlay').forEach(overlay => {
+        overlay.addEventListener('click', (e) => {
+            if (e.target === overlay) overlay.classList.remove('modal-open');
+        });
+    });
+</script>
 {% endblock %}
