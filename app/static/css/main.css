@@ -565,7 +565,7 @@ body {
     background:    var(--bg-surface);
     border:        1px solid var(--border);
     border-radius: var(--r-lg);
-    overflow:      hidden;
+    overflow:      visible;
 }
 
 .group-header {

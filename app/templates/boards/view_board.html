@@ -31,26 +31,26 @@
             </div>
         </div>
         <div class="links-list">
-            {% set has_links = false %}
+            {% set ns = namespace(has_links=false) %}
             {% for link in links_info %}
                 {% if link.group_id == group.id %}
-                    {% set has_links = true %}
+                    {% set ns.has_links = true %}
                     <div class="link-row">
-                        <div class="link-favicon"></div>
-                        <a href="{{ link.url }}" target="_blank" rel="noopener" class="link-title">{{ link.title }}</a>
-                        <div class="link-dots" onclick="toggleLinkMenu(event, {{ link.id }})">&#8942;</div>
+                    <div class="link-favicon"></div>
+                    <a href="{{ link.URL }}" target="_blank" rel="noopener" class="link-title">{{ link.title }}</a>
+                    <div class="link-dots" onclick="toggleLinkMenu(event, {{ link.id }})">&#8942;</div>
                         <div class="link-menu" id="link-menu-{{ link.id }}">
-                            <div class="link-menu-item" onclick="showDescription('{{ link.description or 'No description' }}')">Description</div>
-                            <div class="link-menu-item" onclick="openEditLinkModal({{ link.id }}, '{{ link.title }}', '{{ link.url }}', '{{ link.description or '' }}')">Change link</div>
-                            <form method="POST" action="{{ url_for('links.delete_link', link_id=link.id) }}"
-                                  onsubmit="return confirm('Delete this link?');" class="inline-form">
-                                <button type="submit" class="link-menu-item link-menu-delete">Delete</button>
-                            </form>
-                        </div>
+                        <div class="link-menu-item" onclick="showDescription('{{ link.description or 'No description' }}')">Description</div>
+                        <div class="link-menu-item" onclick="openEditLinkModal({{ link.id }}, '{{ link.title }}', '{{ link.URL }}', '{{ link.description or '' }}')">Change link</div>
+                        <form method="POST" action="{{ url_for('links.delete_link', link_id=link.id) }}"
+                          onsubmit="return confirm('Delete this link?');" class="inline-form">
+                            <button type="submit" class="link-menu-item link-menu-delete">Delete</button>
+                        </form>
                     </div>
+                </div>
                 {% endif %}
             {% endfor %}
-            {% if not has_links %}
+            {% if not ns.has_links %}
                 <div class="empty-group">No links yet</div>
             {% endif %}
         </div>
