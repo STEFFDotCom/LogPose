@@ -80,17 +80,32 @@ def delete_link(link_id):
         board_id = get_group_row.board_id
     else:
         flash("Board does not exist or an error happened - contact admin", "danger")
-        return redirect(url_for("boards.view_board", board_id = board_id))
+        return redirect(url_for("boards.my_boards"))
     
     # get board row
     get_board_row = Board.query.filter_by(id = board_id).first()
 
     # DEFENSIVE GUARD
     # 
+    if not get_board_row:
+        flash("Board does not exist or an error happened - contact admin", "danger")
+        return redirect(url_for("boards.my_boards"))
+    elif get_board_row.is_shared == True:
+        get_userteam_row = UserTeam.query.filter_by(user_id = current_user.id, team_id = get_board_row.team_id).first()
+        if get_userteam_row.role != "editor":
+            flash("You do not have permission to delete this group. If you want to have it deleted, contact admin.", "danger")
+            return redirect(url_for("boards.view_board", board_id = board_id))
+    elif get_board_row.is_shared == False:
+        if get_board_row.user_id != current_user.id:
+            flash("You do not have permission to delete this group. If you want to have it deleted, contact admin.", "danger")
+            return redirect(url_for("boards.view_board", board_id = board_id))
 
+    # delete link
+    db.session.delete(get_link_row)
+    db.session.commit()
 
-
-    pass
+    flash("Link has been successfully deleted!", "success")
+    return redirect(url_for("boards.view_board", board_id = board_id))
 
 @links.route("/links/<int:link_id>/edit", methods = ["POST"])
 @login_required
