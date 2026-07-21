@@ -85,8 +85,7 @@ def delete_link(link_id):
     # get board row
     get_board_row = Board.query.filter_by(id = board_id).first()
 
-    # DEFENSIVE GUARD
-    # 
+    # DEFENSIVE GUARD 
     if not get_board_row:
         flash("Board does not exist or an error happened - contact admin", "danger")
         return redirect(url_for("boards.my_boards"))
@@ -110,4 +109,28 @@ def delete_link(link_id):
 @links.route("/links/<int:link_id>/edit", methods = ["POST"])
 @login_required
 def edit_link(link_id):
+    
+    get_link_row = Link.query.filter_by(id = link_id).first()
+
+    # check if link exists
+    if get_link_row:
+        group_id = get_link_row.group_id
+    else:
+        flash("Link does not exist or an error happened - contact admin", "danger")
+        return redirect(url_for("boards.my_boards"))
+    
+    get_group_row = Group.query.filter_by(id = group_id).first()
+
+    # check if group exists
+    if get_group_row:
+        board_id = get_group_row.board_id
+    else:
+        flash("Board does not exist or an error happened - contact admin", "danger")
+        return redirect(url_for("boards.my_boards"))
+    
+    get_board_row = Board.query.filter_by(id = board_id).first()
+
+    # DEFENSIVE GUARD
+    
+    
     pass
