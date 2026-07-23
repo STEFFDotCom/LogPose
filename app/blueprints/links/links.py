@@ -131,6 +131,34 @@ def edit_link(link_id):
     get_board_row = Board.query.filter_by(id = board_id).first()
 
     # DEFENSIVE GUARD
+    if not get_board_row:
+        flash("Board does not exist or an error happened - contact admin", "danger")
+        return redirect(url_for("boards.my_boards"))
+    elif get_board_row.is_shared == True:
+        get_userteam_row = UserTeam.query.filter_by(user_id = current_user.id, team_id = get_board_row.team_id).first()
+        if get_userteam_row.role != "editor":
+            flash("You do not have permission to edit this board. If you believe this is a mistake contact admin.", "danger")
+            return redirect(url_for("boards.view_board", board_id = board_id))
+    elif get_board_row.is_shared == False:
+        if get_board_row.user_id != current_user.id:
+            flash("You do not have permission to delete this board. If you want to have it deleted, contact admin.", "danger")
+            return redirect(url_for("boards.view_board", board_id = board_id))
+        
+    new_title = request.form.get("link_title")
+
+    if not new_title:
+        flash("Title cannot be empty - please type something", "danger")
+        return redirect(url_for("boards.view_board", board_id = board_id))
     
-    
-    pass
+    get_link_row.title = new_title
+
+    new_url = request.form.get("link_url")
+    get_link_row.URL = new_url
+
+    new_description = request.form.get("link_description")
+    get_link_row.description = new_description
+
+    db.session.commit()
+
+    flash("Link has been successfully updated!", "success")
+    return redirect(url_for("boards.view_board", board_id = board_id))

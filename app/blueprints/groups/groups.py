@@ -118,7 +118,7 @@ def edit_group(group_id):
             return redirect(url_for("boards.view_board", board_id = board_id))
     
     # get new name and new color and commit it to DB
-    new_name = request.form.get("NEW_NAME_PLACEHOLDER")
+    new_name = request.form.get("new_name")
 
     if not new_name:
         flash("Group name cannot be empty", "danger")
@@ -126,7 +126,7 @@ def edit_group(group_id):
     
     get_group_row.group_name = new_name
 
-    new_color = request.form.get("NEW_COLOR_PLACEHOLDER")
+    new_color = request.form.get("new_color")
     get_group_row.group_color = new_color
 
     db.session.commit()
